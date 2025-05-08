@@ -90,7 +90,8 @@ The structure follows IEEE Std 830-1998 (SRS).
   \item Score points by clicking characters, including professors and trustees
   \item Randomised character appearance
   \item Local-storage leaderboard (highest score)
-  \item Special “trustee” character with unique explosion animation
+  \item Customizable mallet cursor (selectable at game start)
+  \item Special “trustee” character with unique explosion animation and bonus points
 \end{itemize}
 
 \section{User Classes and Characteristics}
@@ -107,15 +108,16 @@ The structure follows IEEE Std 830-1998 (SRS).
     \item \emph{Software}: A modern web browser supporting HTML5, CSS3, and JavaScript (See Section 2.7 for specific target browsers and versions).
     \item \emph{Display Requirements}:
         \begin{itemize}
-            \item \textbf{Responsive Layout}: The game utilizes a responsive design. The user interface elements, particularly the game board, dynamically adapt to the available browser viewport size.
-            \item \textbf{Minimum Usable Viewport}: While the layout adapts fluidly, a minimum viewport size of 375 $\times$ 667 pixels (typical portrait smartphone) is recommended to ensure comfortable interaction and readability. Functionality on significantly smaller viewports is not guaranteed.
+            \item \textbf{Responsive Layout}: The game utilizes a responsive design with dynamic scaling. The user interface elements, particularly the game board, dynamically adapt to the available browser viewport size.
+            \item \textbf{Minimum Usable Viewport}: While the layout adapts fluidly, a minimum viewport size of 375 $\times$ 667 pixels (typical older portrait smartphone) is recommended to ensure comfortable interaction and readability. Functionality on significantly smaller viewports is not guaranteed.
+            \item \textbf{Physical Size Limitations}: The game requires sufficient physical screen size for accurate targeting. Devices with physical displays smaller than 4 inches (diagonal) are not supported, regardless of resolution or scaling techniques. Even with responsive design, extremely small displays (such as 2 $\times$ 2 inch screens) provide inadequate target sizes for the precision required in gameplay.
             \item \textbf{Pixel Density}: The application is designed to render correctly on both standard-resolution and high-DPI displays (such as Apple Retina displays).
         \end{itemize}
     \item \emph{Audio Requirements}:
         \begin{itemize}
             \item \textbf{Output Device}: The system must have functional audio output capability to experience the full game.
             \item \textbf{Browser Audio Support}: The browser must support the HTML5 Audio API.
-            \item \textbf{Note}: The game remains playable with audio disabled, but provides a richer experience with sound enabled.
+            \item \textbf{Note}: The game is playable without audio, but this is not the intended experience.
         \end{itemize}
 \end{itemize}
 
@@ -156,6 +158,7 @@ The main screen comprises:
   \item Pause/Resume and Exit controls
   \item Volume controls, with mute/unmute toggle
 \end{itemize}
+
 Sketches and mock-ups will be supplied separately.
 
 \section{Hardware Interfaces}
@@ -188,17 +191,40 @@ A fast-paced game in which doors open at random and reveal professors. Players c
   \item Game increments score.
   \item Successful hit: +10 points.
   \item Miss or inactivity: –5 points.
-  \item Trustee character triggers a brief explosion animation ($\approx$ 1 s).
+  \item Trustee character (appearing approximately once per game) triggers a brief explosion animation ($\approx$ 1 s) and awards +20 points.
 \end{enumerate}
 
 \subsection{Functional Requirements}
 \begin{itemize}
   \item \textbf{REQ-1.1}: Characters appear at uniformly random intervals of 0.5–1.5 s.
-  \item \textbf{REQ-1.2}: Trustee explosion animation must visibly overlay the screen for $\approx$ 1 s and play an accompanying scream sound effect.
+  \item \textbf{REQ-1.2}: Trustee character must appear randomly with approximately 5-10% probability. Trustee must trigger a special explosion animation visibly overlaying the screen for $\approx$ 1 s and play an accompanying scream sound effect.
   \item \textbf{REQ-1.3}: Characters vanish after 2 s if not clicked.
+  \item \textbf{REQ-1.4}: Player's cursor must be visually replaced by a selected mallet graphic which appears to "whack" when clicked.
   \item \textbf{REQ-2.1}: Score updates in real-time and after each interaction.
   \item \textbf{REQ-2.2}: Top scores are stored via Local Storage.
   \item \textbf{REQ-2.3}: Sound effect plays on character clicks, misses, and trustee hits. Specific sound to be determined during implementation.
+\end{itemize}
+
+\section{Weapon Selection Interface}
+
+\subsection{Description}
+Before gameplay begins, players are presented with a weapon selection interface where they can choose their preferred mallet style. This interface enhances personalization and engagement, allowing players to select the whacking implement that best suits their style.
+
+\subsection{Stimulus/Response Sequences}
+\begin{enumerate}
+  \item Player clicks "Play" on the main menu.
+  \item Weapon selection screen appears with visual representation of available mallets.
+  \item Player selects desired mallet.
+  \item Game begins with the player's cursor replaced by their selected mallet.
+\end{enumerate}
+
+\subsection{Functional Requirements}
+\begin{itemize}
+  \item \textbf{REQ-WS-1}: The game must offer at least two visually distinct mallet options.
+  \item \textbf{REQ-WS-2}: Each mallet must have both a selection image and a corresponding cursor representation.
+  \item \textbf{REQ-WS-3}: The selected mallet must visually transform (scale down briefly) when clicked to simulate impact.
+  \item \textbf{REQ-WS-4}: Player's mallet selection must persist for the entire gameplay session.
+  \item \textbf{REQ-WS-5}: Weapon selection interface must include preview images that clearly represent how each mallet will appear during gameplay.
 \end{itemize}
 
 \section{Audio and Sound Effects}
@@ -270,7 +296,8 @@ No sensitive data processed. All data remain local to the browser.
 \chapter{Glossary}
 \begin{description}
   \item[Professor] Standard clickable target.
-  \item[Trustee] Special character triggering explosion animation.
+  \item[Trustee] Special character with higher point value (20 points) that appears less frequently and triggers a unique explosion animation with scream effect.
+  \item[Mallet] The player's cursor, visually represented as a whacking implement. Players can choose between different mallet styles before starting the game.
   \item[FPS] Frames per second.
   \item[Local Storage] Browser-side key-value store.
 \end{description}
