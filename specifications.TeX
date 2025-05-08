@@ -87,7 +87,7 @@ The structure follows IEEE Std 830-1998 (SRS).
 \section{Product Functions}
 \begin{itemize}
   \item Start, pause, and end gameplay
-  \item Score points by clicking professor characters
+  \item Score points by clicking characters, including professors and trustees
   \item Randomised character appearance
   \item Local-storage leaderboard (highest score)
   \item Special “trustee” character with unique explosion animation
@@ -103,7 +103,7 @@ The structure follows IEEE Std 830-1998 (SRS).
 
 \section{Operating Environment}
 \begin{itemize}
-    \item \emph{Hardware}: PC, laptop, or mobile device capable of running a modern web browser, equipped with mouse, trackpad, or touchscreen input.
+    \item \emph{Hardware}: PC, laptop, or mobile device capable of running a modern web browser, equipped with mouse, trackpad, or touchscreen input, and audio output capability.
     \item \emph{Software}: A modern web browser supporting HTML5, CSS3, and JavaScript (See Section 2.7 for specific target browsers and versions).
     \item \emph{Display Requirements}:
         \begin{itemize}
@@ -111,12 +111,18 @@ The structure follows IEEE Std 830-1998 (SRS).
             \item \textbf{Minimum Usable Viewport}: While the layout adapts fluidly, a minimum viewport size of 375 $\times$ 667 pixels (typical portrait smartphone) is recommended to ensure comfortable interaction and readability. Functionality on significantly smaller viewports is not guaranteed.
             \item \textbf{Pixel Density}: The application is designed to render correctly on both standard-resolution and high-DPI displays (such as Apple Retina displays).
         \end{itemize}
+    \item \emph{Audio Requirements}:
+        \begin{itemize}
+            \item \textbf{Output Device}: The system must have functional audio output capability to experience the full game.
+            \item \textbf{Browser Audio Support}: The browser must support the HTML5 Audio API.
+            \item \textbf{Note}: The game remains playable with audio disabled, but provides a richer experience with sound enabled.
+        \end{itemize}
 \end{itemize}
 
 \section{Design and Implementation Constraints}
 \begin{itemize}
   \item Implemented entirely in JavaScript (approved libraries permitted)
-  \item Source repository hosted on Brooklyn College SVN servers
+  \item Source repository hosted on RiouxSVN, accessible at \url{https://svn.riouxsvn.com/semestergames/}
 \end{itemize}
 
 \section{User Documentation}
@@ -128,7 +134,13 @@ The structure follows IEEE Std 830-1998 (SRS).
 \section{Assumptions and Dependencies}
 \begin{itemize}
   \item JavaScript and local-storage enabled in browser
-  \item Target browsers: Chrome, Firefox, Safari, Edge (latest two major releases)
+  \item Target browsers:
+    \begin{itemize}
+      \item Chrome 135+
+      \item Firefox 137+
+      \item Safari 17.x+
+      \item Edge 135+
+    \end{itemize}
   \item External libraries may be adopted later (TBD)
 \end{itemize}
 
@@ -142,6 +154,7 @@ The main screen comprises:
   \item Game field where professors appear behind doors
   \item Dynamic timer and score display
   \item Pause/Resume and Exit controls
+  \item Volume controls, with mute/unmute toggle
 \end{itemize}
 Sketches and mock-ups will be supplied separately.
 
@@ -218,6 +231,12 @@ The game implements a comprehensive sound system to provide audio feedback for g
   \item \textbf{REQ-3.3}: Sound effects must synchronize with their corresponding visual events with latency $\leq$ 50 ms.
   \item \textbf{REQ-3.4}: Game must include a mute/unmute toggle button that persists user preference across sessions via Local Storage.
   \item \textbf{REQ-3.5}: Volume level must be consistent across all sound effects to prevent unexpected loud sounds.
+  \item \textbf{REQ-3.6}: Sound format must be MP3 with WAV fallback for maximum browser compatibility.
+  \item \textbf{REQ-3.7}: Individual sound effect files must not exceed 100 KB to ensure quick loading times.
+  \item \textbf{REQ-3.8}: Game must remain fully playable with audio disabled for accessibility.
+  \item \textbf{REQ-3.9}: In addition to mute/unmute, the game should provide volume adjustment with settings persisted in Local Storage.
+  \item \textbf{REQ-3.10}: Audio system must efficiently pre-load and cache sound effects to prevent performance degradation.
+  \item \textbf{REQ-3.11}: Game must gracefully handle scenarios where audio playback is not supported or permission is denied.
 \end{itemize}
 
 % ====================== 5  NON-FUNCTIONAL REQS =============================
@@ -227,6 +246,7 @@ The game implements a comprehensive sound system to provide audio feedback for g
 \begin{itemize}
   \item Initial page load $\leq$ 5 s (on broadband).
   \item Animation renders at 60 fps on supported hardware.
+  \item Audio playback must begin within 50 ms of triggering events.
 \end{itemize}
 
 \section{Security}
@@ -243,27 +263,6 @@ No sensitive data processed. All data remain local to the browser.
   \item Detect and report Local Storage quota issues.
   \item Provide clear feedback for unsupported browsers.
 \end{itemize}
-
-\section{Audio Requirements}
-\begin{itemize}
-  \item \textbf{Sound Format}: All audio files must be in MP3 format with a fallback to WAV format for maximum browser compatibility.
-  \item \textbf{File Size}: Individual sound effect files must not exceed 100 KB to ensure quick loading times.
-  \item \textbf{Latency}: Audio playback must begin within 50 ms of the triggering event to maintain synchronization with visual feedback.
-  \item \textbf{Accessibility}: Game must remain fully playable with audio disabled.
-  \item \textbf{Volume Control}: In addition to mute/unmute functionality, the game should provide volume adjustment capability, with volume setting persisted in Local Storage.
-  \item \textbf{Memory Usage}: Audio system must efficiently pre-load and cache sound effects to prevent performance degradation during gameplay.
-  \item \textbf{Fallback Mechanism}: The game must gracefully handle scenarios where audio playback is not supported or permission is denied by the browser.
-\end{itemize}
-
-% \section{Future Enhancements}
-% \begin{itemize}
-%   \item Multiplayer mode
-%   \item Additional characters and effects
-% \end{itemize}
-
-% ====================== 6  OTHER REQUIREMENTS ==============================
-% \chapter{Other Requirements}
-% None at present.
 
 % ====================== APPENDICES =========================================
 \appendix
