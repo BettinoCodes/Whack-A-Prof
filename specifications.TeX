@@ -70,7 +70,7 @@ The structure follows IEEE Std 830-1998 (SRS).
 \end{itemize}
 
 \section{Project Scope}
-\product is an arcade-style browser game inspired by \emph{Whack-a-Mole}. Players earn points by clicking professors as doors open. The game was developed for CISC 3140 at Brooklyn College.
+\product is an arcade-style browser game inspired by \emph{Whack-a-Mole}. Players earn points by hitting professors as they pop up from the holes. The game was developed for CISC 3140 at Brooklyn College.
 
 \section{References}
 \begin{itemize}
@@ -91,7 +91,7 @@ The structure follows IEEE Std 830-1998 (SRS).
   \item Randomised character appearance
   \item Local-storage leaderboard (highest score)
   \item Customizable mallet cursor (selectable at game start)
-  \item Special “trustee” character with unique explosion animation and bonus points
+  \item Special “trustee” character with unique explosion animation and bonus points when hit
 \end{itemize}
 
 \section{User Classes and Characteristics}
@@ -150,13 +150,56 @@ The structure follows IEEE Std 830-1998 (SRS).
 \chapter{External Interface Requirements}
 
 \section{User Interfaces}
-The main screen comprises:
 \begin{itemize}
-  \item Clearly labelled buttons: \textsc{Start}, \textsc{Tutorial}, \textsc{High Scores}
-  \item Game field where professors appear behind doors
-  \item Dynamic timer and score display
-  \item Pause/Resume and Exit controls
-  \item Volume controls, with mute/unmute toggle
+  \item \textbf{Home Screen:} 
+    \begin{itemize}
+        \item The text ``Whack A Prof!'' will be at the top center of the screen.
+        \item Start button: Positioned dead center of the screen.
+        \item Tutorial button: Slightly below the Start button.
+        \item Leaderboard button: Slightly below the Tutorial button.
+        \item Images of the professor on the left and right sides of the screen.
+    \end{itemize}
+  \item \textbf{Tutorial:}
+    \begin{itemize}
+        \item Clicking the Tutorial button will open a video or images (based on the graphic designer's choice) that explain how to play the game.
+    \end{itemize}
+  \item \textbf{Leaderboard:}
+    \begin{itemize}
+        \item Clicking the Leaderboard button will display a scrollable list of the top 100 scores.
+        \item The user's highest score will be shown at the very top of the leaderboard, highlighted and ranked.
+    \end{itemize}
+  \item \textbf{Start/Weapon Selection:}
+    \begin{itemize}
+        \item When the user clicks the Start button, a variety of mallet weapons (graphic designer's choice) are displayed in the center of the screen.
+    \end{itemize}
+  \item \textbf{Game Field:}
+    \begin{itemize}
+        \item The game field with 16 holes (4x4) will be displayed, spreading from left to right of the screen when a mallet is selected.
+        \item The professor will randomly pop up from the holes.
+    \end{itemize}
+  \item \textbf{Dynamic Timer and Score Display:}
+    \begin{itemize}
+        \item Dynamic timer: Positioned at the top-left of the screen.
+        \item Score display: Slightly to the right of the timer.
+    \end{itemize}
+  \item \textbf{Pause/Resume and Exit Buttons:}
+    \begin{itemize}
+        \item Pause/Resume icon button: Positioned at the top-right of the screen.
+        \item Exit/End game icon button: Slightly to the right of the Pause/Resume icon button.
+    \end{itemize}
+  \item \textbf{Mute Button:}
+    \begin{itemize}
+        \item Toggle Mute button: Positioned slightly to the left of the Pause/Resume icon button.
+    \end{itemize}
+  \item \textbf{Game Over Screen:}
+    \begin{itemize}
+        \item A square box will appear in the center of the screen, displaying both the current score and your best score.
+        \item Below the score, there will be two buttons: 
+        \begin{itemize}
+            \item Home button: Returns the user to the home screen.
+            \item Play again button: Allows the user to play again with the current score reset to zero.
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
 
 Sketches and mock-ups will be supplied separately.
@@ -182,7 +225,7 @@ None (client-side only).
 \section{Gameplay and Scoring Mechanics}
 
 \subsection{Description}
-A fast-paced game in which doors open at random and reveal professors. Players click them to earn points; an on-screen score updates immediately. Top scores persist locally.
+A fast-paced game in which professors randomly pop up from any of the 16 holes. Players click them to earn points; an on-screen score updates immediately. Top scores persist locally.
 
 \subsection{Stimulus/Response Sequences}
 \begin{enumerate}
