@@ -101,7 +101,7 @@ const UI = {
       this.elements.leaderboardButton.addEventListener('click', () => this.showScreen('highScores'));
       this.elements.weapon1Btn.addEventListener("click", () => {
         // Inject CSS rule for custom cursor inside gameplay
-        style = document.createElement("style");
+          let style = document.createElement("style");
         style.innerHTML = `
           #gameplay, #gameplay * {
             cursor: url('../assets/Animation/mallet1cursor3.png') 50 45, auto !important;
@@ -114,7 +114,7 @@ const UI = {
       
       this.elements.weapon2Btn.addEventListener("click", () => {
         // Inject CSS rule for custom cursor inside gameplay
-        style = document.createElement("style");
+          let style = document.createElement("style");
         style.innerHTML = `
           #gameplay, #gameplay * {
             cursor: url('../assets/Animation/mallet2cursor3.png') 50 45, auto !important;
@@ -249,7 +249,7 @@ const UI = {
       for (let i = 0; i < totalHoles; i++) {
           const hole = document.createElement('div');
           hole.classList.add('hole');
-          hole.dataset.index = i;
+          hole.dataset.index = i; // Cannot assign number to string, fix.
           // Note: Click listener is now handled by delegation on gameBoard
           this.elements.gameBoard.appendChild(hole);
           this.elements.holes.push(hole); // Cache reference
@@ -343,7 +343,7 @@ const UI = {
     if (scores.length === 0) {
         listElement.innerHTML = '<li>No high scores yet!</li>';
     } else {
-        scores.forEach((score, index) => {
+        scores.forEach((score) => {
             const listItem = document.createElement('li');
             listItem.textContent = `${score}`; // Score
             listElement.appendChild(listItem);
@@ -460,9 +460,9 @@ class Game {
   }
 /**
  * Handle a successful click on a mole: award points, update score display.
- * @param {MouseEvent} event
  * @sideEffect Updates `score`, `scoreDisplay.textContent`, and
  *             may remove `.mole` from the clicked hole.
+ * @param index
  */
   handleWhack(index) {
           this.score += 10;
@@ -473,10 +473,9 @@ class Game {
 
   }
     /**
-        * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
-        * @param {MouseEvent} event
-        * @sideEffect Updates `score`, `scoreDisplay.textContent` 
-         */
+     * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
+     * @sideEffect Updates `score`, `scoreDisplay.textContent`
+     */
   handleMiss(){
     this.score -= 5; // Penalty for missed whack
     if (this.score < 0) this.score = 0; // minimum score is zero
