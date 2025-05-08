@@ -11,6 +11,17 @@ const config = {
 };
 
 // -- Local Storage for Scores
+/**
+ * Retrieves high scores from local storage.
+ * 
+ * @function getHighScores
+ * @returns {Array} An array of high score objects. Returns an empty array if no scores exist,
+ *                  if the stored item is not an array, or if there is an error parsing the JSON.
+ * @throws {Error} Logs error to console if JSON parsing fails but still returns an empty array.
+ * @example
+ * const highScores = getHighScores();
+ * highScores = [{name: "Player1", score: 1000}, {name: "Player2", score: 900}]
+ */
 function getHighScores() {
     const scoresJSON = localStorage.getItem(config.HIGH_SCORES_KEY);
     try {
@@ -23,10 +34,19 @@ function getHighScores() {
         return [];
     }
 }
-
+// -- Save High Score
+/**
+ * Saves a new high score to local storage.
+ * 
+ * @function saveHighScore
+ * @param {number} newScore - The new score to save.
+ * @returns {void}
+ * @example
+ * saveHighScore(1500);
+ * The function includes a check to ensure that the score is a valid number and greater than zero.
+ */
 function saveHighScore(newScore) {
     if (typeof newScore !== 'number' || isNaN(newScore) || newScore <= 0) {
-        // Don't save zero or invalid scores
         return;
     }
 
@@ -53,7 +73,6 @@ const UI = {
       highScoresList: document.getElementById('score-list'),
       weaponSelector: document.getElementById('weapon-selection'),
     //   startScreen: document.getElementById('start-screen'),
-
 
       gameBoard: document.getElementById('game'),
       scoreDisplay: document.getElementById('score'),
