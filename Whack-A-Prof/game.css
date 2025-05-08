@@ -7,19 +7,17 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to top right, #a1c4fd, #c2e9fb);
-    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to top right, #6201f4, #630ae8);
+    font-family: 'serif', sans-serif;
   }
 
-  h1 {
-    font-size: 48px;
-    color: #333;
-    margin-bottom: 10px;
+  
+  button:hover {
+    transform: scale(1.1);
+    background-color: #ffe066; /* lighter yellow */
+    box-shadow: 0 0 12px 4px rgba(255, 255, 0, 0.5);
   }
+
 
   #score, #timer {
     font-size: 24px;
@@ -27,22 +25,45 @@ body {
     color: #333;
   }
 
-  button {
+
+  #menu-whole {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
-    padding: 12px 30px;
-    font-size: 20px;
-    border: none;
-    border-radius: 10px;
-    background-color: #ff6b6b;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
   }
 
-  button:hover {
-    background-color: #ff4757;
+  .back-button {
+    margin-top: 40px;
   }
+
+  body button{
+    background-color: #ffcc00; /* bright yellow */
+    color: #4b0082; /* deep purple text */
+    border: none;
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
+
+  #main-menu button {
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 200px;
+    height: 50px;
+    position: relative;
+  }
+
 
   .game {
     margin-top: 30px;
@@ -72,6 +93,24 @@ body {
 
   .hole:hover {
     background-color: #70a1ff;
+  }
+
+  #gameplay button:hover{
+    cursor: auto;
+  }
+  
+  #leaderboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  #tutor{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
   }
 
   .mole {
@@ -117,10 +156,87 @@ body {
     margin-top: 15px;
   }
 
-  .hidden {
-    display: none;
-  }
+  /* Overlay container */
+.hidden {
+  display: none;
+}
 
-  .pause-button {
-    display: none;
-  }
+
+
+#weapon-selection button {
+  background-color: #ffcc00; /* bright yellow */
+  color: #4b0082; /* deep purple text */
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: row;
+  margin: 10px;
+  margin-bottom: 50px;
+}
+
+.weapon-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#weapon-selection img {
+  width: 350px;
+  height: 350px;
+  margin: 5px;
+  border-radius: 5px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
+}
+
+#weapon-selection img:hover {
+  transform: scale(1.1) rotate(-2deg); /* zoom + slight tilt */
+  filter: brightness(1.2);  
+}
+
+#weapon-selection h2 {
+  color: #ffd900;
+  margin-bottom: 20px;
+}
+
+#weapons{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#weapons button {
+  background-color: transparent;
+}
+
+.side-image {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 400px; /* adjust as needed */
+}
+
+.side-image.left {
+  left: 10%;
+  margin-left: 40px; /* optional spacing from edge */
+}
+
+.side-image.right {
+  right: 10%;
+  margin-right: 60px; /* optional spacing from edge */
+}
+
+
+
+

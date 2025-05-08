@@ -51,6 +51,10 @@ const UI = {
       tutorial: document.getElementById('tutorial'),
       highScores: document.getElementById('high-scores'),
       highScoresList: document.getElementById('score-list'),
+      weaponSelector: document.getElementById('weapon-selection'),
+    //   startScreen: document.getElementById('start-screen'),
+
+
       gameBoard: document.getElementById('game'),
       scoreDisplay: document.getElementById('score'),
       timerDisplay: document.getElementById('timer'),
@@ -64,14 +68,19 @@ const UI = {
       startGameButton: document.querySelector('.start-game-button'), // Assuming one start button in gameplay
       pauseButton: document.querySelector('.pause-button'), // Assuming one pause button
       closeEndCardButton: null, // Will find/create later
+      weapon1Btn: document.getElementById('weapon1'),
+      weapon2Btn: document.getElementById('weapon2'),
+    //   startButton: document.getElementById('start-button') // Assuming one start button in gameplay
   },
+
+  // Removed invalid console.log statement
 
   init(gameInstance) {
       this.game = gameInstance; // Reference to the game logic instance
       this.setupEventListeners();
       this.scaleBoard();
       window.addEventListener('resize', this.scaleBoard.bind(this)); // Ensure 'this' is UI
-      this.showScreen('mainMenu');
+      this.showScreen('mainMenu'); // Show start screen on load
       this.createHoles(config.height, config.width);
       this.updateTimerDisplay(config.availableTime, false); // Initial display
       this.updateScoreDisplay(0); // Initial display
@@ -82,11 +91,39 @@ const UI = {
  * NAVIGATION BUTTON LISTENERS
  * Wire up your menu / tutorial / leaderboard buttons.
  * ─────────────────────────────────────────────────────────────────────────────
+
  */
+
+
   setupEventListeners() {
-      this.elements.playButton.addEventListener('click', () => this.showScreen('gameplay'));
+      this.elements.playButton.addEventListener('click', () => this.showScreen('weaponSelector'));
       this.elements.tutorialButton.addEventListener('click', () => this.showScreen('tutorial'));
       this.elements.leaderboardButton.addEventListener('click', () => this.showScreen('highScores'));
+      this.elements.weapon1Btn.addEventListener("click", () => {
+        // Inject CSS rule for custom cursor inside gameplay
+        style = document.createElement("style");
+        style.innerHTML = `
+          #gameplay, #gameplay * {
+            cursor: url('../assets/Animation/mallet1cursor3.png') 50 45, auto !important;
+          }
+        `;
+        document.head.appendChild(style);
+      
+        this.showScreen("gameplay");
+      });
+      
+      this.elements.weapon2Btn.addEventListener("click", () => {
+        // Inject CSS rule for custom cursor inside gameplay
+        style = document.createElement("style");
+        style.innerHTML = `
+          #gameplay, #gameplay * {
+            cursor: url('../assets/Animation/mallet2cursor3.png') 50 45, auto !important;
+          }
+        `;
+        document.head.appendChild(style);
+      
+        this.showScreen("gameplay");
+      }); //   this.elements.startButton.addEventListener('click', () => this.showScreen('mainMenu'));
 
     /**
      * Return-to-main-menu buttons.
@@ -144,6 +181,8 @@ const UI = {
       this.elements.tutorial.classList.add('hidden');
       this.elements.highScores.classList.add('hidden');
       this.elements.gameplay.classList.add('hidden');
+      this.elements.weaponSelector.classList.add('hidden');
+    //   this.elements.startScreen.classList.add('hidden');
   },
      /**
             * Show the main menu overlay and hide all others.
@@ -153,7 +192,6 @@ const UI = {
       this.hideAllScreens();
       switch (screenName) {
           case 'mainMenu':
-          
               this.elements.mainMenu.classList.remove('hidden');
               break;
           case 'gameplay':
@@ -172,7 +210,10 @@ const UI = {
               this.displayHighScores();
               this.elements.highScores.classList.remove('hidden');
               break;
-      }
+          case 'weaponSelector':
+              this.elements.weaponSelector.classList.remove('hidden');
+              break;
+        }
   },
   /**
  * Recalculate grid hole size and gap based on viewport dimensions,

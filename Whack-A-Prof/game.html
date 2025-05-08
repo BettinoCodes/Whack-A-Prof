@@ -7,22 +7,47 @@
     <link rel="stylesheet" href="game.css">
 </head>
 <body class="container">
-    <div id="main-menu">
-        <h1>Whack-A-Professor</h1>
+
+    <div id="main-menu"  class="overlay hidden">
+        <!-- <img src="../assets/Animation/malletstart.png" class="side-image left" alt="Left image"> -->
+        <img src="../assets/Animation/prof1_ 1.png" class="side-image left" alt="Left image">
+<img src="../assets/Animation/prof1_dizzy 1.png" class="side-image right" alt="Right image">
+        <div id="menu-whole">
+        <div id="menu-title">
+        <img src="../assets/Animation/Title.png" alt="Whack a prof title" />
+        </div>
         <button id="play-button">Play</button>
         <button id="tutorial-button">Tutorial</button>
         <button id="leaderboard-button">Leaderboards</button>
+    </div>
+      </div>
+    
+    <div id="weapon-selection" class="overlay hidden">
+        <div class="weapon-list"><
+            <div id="weapon-title">
+                <h2>Choose Your Weapon</h2>
+            </div>
+            <div id="weapons">
+            <button id="weapon1"><img src="../assets/Animation/mallet1.png" alt="Weapon 1" class="weapon-image"></button>
+            <button id="weapon2"><img src="../assets/Animation/mallet2.png" alt="Weapon 1" class="weapon-image"></button>
+            </div>
+            <button class="back-button">Back</button>
+        </div>
       </div>
     
     <div id="tutorial" class="overlay hidden">
+        <div id ="tutor">
         <h2>How to Play</h2>
         <p>Click the door when the professor is behind it. +10 points for correct hit, -5 for miss.</p>
         <button class="back-button">Back</button>
     </div>
+    </div>
     <div id="high-scores" class="overlay hidden">
+        <div id ="leaderboard">
         <h2>High Scores</h2>
         <ol id="score-list"></ol>
         <button class="back-button">Back</button>
+        </div>
     </div>
 
     <div id="gameplay" class="overlay hidden">
