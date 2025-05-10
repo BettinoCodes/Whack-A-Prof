@@ -125,7 +125,7 @@ const UI = {
       this.elements.leaderboardButton.addEventListener('click', () => this.showScreen('highScores'));
       this.elements.weapon1Btn.addEventListener("click", () => {
         // Inject CSS rule for custom cursor inside gameplay
-          let style = document.createElement("style");
+        let style = document.createElement("style");
         style.innerHTML = `
           #gameplay, #gameplay * {
             cursor: url('../assets/Animation/mallet1cursor3.png') 50 45, auto !important;
@@ -138,7 +138,7 @@ const UI = {
       
       this.elements.weapon2Btn.addEventListener("click", () => {
         // Inject CSS rule for custom cursor inside gameplay
-          let style = document.createElement("style");
+        let style = document.createElement("style");
         style.innerHTML = `
           #gameplay, #gameplay * {
             cursor: url('../assets/Animation/mallet2cursor3.png') 50 45, auto !important;
@@ -330,7 +330,7 @@ const UI = {
         mole.style.zIndex = '1';
         mole.style.pointerEvents = 'none';
 
-        
+
  // Append mole to the hole
         hole.appendChild(mole);
         this.elements.gameBoard.appendChild(hole);
@@ -576,9 +576,9 @@ class Game {
          this.ui.playSound('Punch'); // Sound effect for
   }
     /**
-     * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
-     * @sideEffect Updates `score`, `scoreDisplay.textContent`
-     */
+        * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
+        * @sideEffect Updates `score`, `scoreDisplay.textContent` 
+         */
   handleMiss(){
     this.score -= 5; // Penalty for missed whack
     if (this.score < 0) this.score = 0; // minimum score is zero
