@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="game.css">
 </head>
 <body class="container">
-
+    <div id="custom-cursor"></div>
     <div id="main-menu"  class="overlay hidden">
         <!-- <img src="../assets/Animation/malletstart.png" class="side-image left" alt="Left image"> -->
         <img src="../assets/Animation/prof1_1.png" class="side-image left" alt="Left image">
@@ -36,21 +36,44 @@
       </div>
     
     <div id="tutorial" class="overlay hidden">
-        <div id ="tutor">
-        <h2>How to Play</h2>
-        <p>Click the hole when the professor appears. +10 points for correct hit, -5 for miss.</p>
-        <p>When a trustee appears, hit him for +20 points!</p>
-        <button class="back-button">Back</button>
+  <div id="tutor">
+    <div class="tutorial-header">TUTORIAL</div>
+    
+    <div class="tutorial-boxes">
+      <div class="tutorial-box">
+        <h3>HIT</h3>
+        <img src="../assets/Animation/prof1_1.png" alt="Professor" class="character-img">
+        <p class="character-label">PROFESSOR</p>
+      </div>
+      
+      <div class="tutorial-box">
+        <h3>DO NOT HIT</h3>
+        <img src="../assets/Animation/trustee.png" alt="Trustee" class="character-img">
+        <p class="character-label">TRUSTEE</p>
+      </div>
     </div>
+    
+    <div class="instructions">
+      <p>CLICK ON THE PROFESSOR WHEN HE APPEARS FROM THE HOLES.</p>
+      <p class="warning">WARNING! DO NOT CLICK ON THE TRUSTEE YOU WILL LOSE POINTS.<br>THERE WILL BE BLOOD IF YOU HIT THE TRUSTEE.</p>
     </div>
-    <div id="high-scores" class="overlay hidden">
-        <div id ="leaderboard">
-        <h2>High Scores</h2>
-        <ol id="score-list"></ol>
-        <button class="back-button">Back</button>
-        </div>
-    </div>
+    
+    <button class="back-button">back</button>
+  </div>
+</div>
 
+    <div id="high-scores" class="overlay">
+  <div id="leaderboard">
+    <div class="header">HIGH SCORE</div>
+    <div class="score-container">
+      <div class="score-header"></div>
+      <ol id="score-list"></ol>
+    </div>
+    <button class="back-button">CLOSE</button>
+  </div>
+</div>
+
+    <div id="game-play">
     <div id="gameplay" class="overlay hidden">
         <div id="gameplay-screen">
         <div id = "gameplay-header">
@@ -68,6 +91,9 @@
         <div id="end-game-card" style="display: none;"></div>
         </div>
         </div>
-    <script src="script.js"></script>
+    </div>
+        
+    <script src = 'script.js'>
+    </script>
 </body>
 </html>

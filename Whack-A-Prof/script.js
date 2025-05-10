@@ -90,9 +90,16 @@ const UI = {
       closeEndCardButton: null, // Will find/create later
       weapon1Btn: document.getElementById('weapon1'),
       weapon2Btn: document.getElementById('weapon2'),
+      cursor: document.getElementById('custom-cursor'),
+      gameplayscreen: document.getElementById('game-play'),
+
 
       Punch: '../assets/Animation/Punchsound.mp3',
       miss: '../assets/Animation/Misssound.mp3',
+
+      originalSrc:'../assets/Animation/prof1_1.png',
+      whackedSrc:'../assets/Animation/prof1_dizzy1.png',
+
     //   startButton: document.getElementById('start-button') // Assuming one start button in gameplay
   },
 
@@ -123,32 +130,18 @@ const UI = {
       this.elements.playButton.addEventListener('click', () => this.showScreen('weaponSelector'));
       this.elements.tutorialButton.addEventListener('click', () => this.showScreen('tutorial'));
       this.elements.leaderboardButton.addEventListener('click', () => this.showScreen('highScores'));
-      this.elements.weapon1Btn.addEventListener("click", () => {
-        // Inject CSS rule for custom cursor inside gameplay
-        let style = document.createElement("style");
-        style.innerHTML = `
-          #gameplay, #gameplay * {
-            cursor: url('../assets/Animation/mallet1cursor3.png') 50 45, auto !important;
-          }
-        `;
-        document.head.appendChild(style);
-      
+       this.elements.weapon1Btn.addEventListener("click", () => {
+        document.body.classList.remove("cursor-weapon2");
+        document.body.classList.add("cursor-weapon1");
         this.showScreen("gameplay");
-      });
-      
-      this.elements.weapon2Btn.addEventListener("click", () => {
-        // Inject CSS rule for custom cursor inside gameplay
-        let style = document.createElement("style");
-        style.innerHTML = `
-          #gameplay, #gameplay * {
-            cursor: url('../assets/Animation/mallet2cursor3.png') 50 45, auto !important;
-          }
-        `;
-        document.head.appendChild(style);
-      
-        this.showScreen("gameplay");
-      }); //   this.elements.startButton.addEventListener('click', () => this.showScreen('mainMenu'));
+        });
 
+        this.elements.weapon2Btn.addEventListener("click", () => {
+        document.body.classList.remove("cursor-weapon1");
+        document.body.classList.add("cursor-weapon2");
+        this.showScreen("gameplay");
+        }); //   this.elements.startButton.addEventListener('click', () => this.showScreen('mainMenu'));
+      
     /**
      * Return-to-main-menu buttons.
      * Each .back-button closes the current overlay and shows the main menu.
@@ -169,6 +162,8 @@ const UI = {
       this.elements.pauseButton.addEventListener('click', () => {
            this.game.togglePause();
       });
+      
+      
 
       /**
         * Handle a click on a hole: award or deduct points, update score display.
@@ -183,8 +178,6 @@ const UI = {
           const clickedElement = event.target; // stores whatever is clicked
           let hitMole = false;
 
-            console.log('Clicked element:', event.target); 
-            console.log('Clicked element tag:', clickedElement.tagName);
 
             const moleImg = clickedElement.closest('.mole-img');
             const hole = clickedElement.closest('.hole');
@@ -192,48 +185,43 @@ const UI = {
             if (moleImg && hole) {
             const index = parseInt(hole.dataset.index, 10);
             if (!isNaN(index)) {
-         // Set hitMole to true if a mole is clicked
-                moleImg.src = moleImg.dataset.whackedSrc;
-                
+         // Set hitMole to true if a mole
+         //  is clicked
+         
+                moleImg.src = moleImg.dataset.whackedSrc; // Change to dizzy image
+                const whackSound = new Audio(UI.elements.Punch);
+                whackSound.play();
                 // Handle the whack
                 this.game.handleWhack(index);
-
-                // Try to show professor image briefly
-                // // Hide after short delay (for visual feedback)
-                // setTimeout(() => {
-                //     moleImg.style.transform = 'translate(-50%, 100%)';
-                //     moleImg.style.pointerEvents = 'none';
-                    
-                //     // Reset to original image after hiding
-                //     setTimeout(() => {
-                //         moleImg.src = moleImg.dataset.originalSrc;
-                //         moleImg.style.transition = 'transform 0.3s ease-out'; // Move back down
-                //     }, 10);
-                // }, 5000); // Show hit image briefly
                 hitMole = true;
             }
         } 
-             // Check if the clicked element is a mole image
-            // if (clickedElement.classList.contains('mole') && clickedElement.classList.contains('hole')) { // if what is clicked contains both a mole and a hole, register a whack
-            //   const index = parseInt(clickedElement.dataset.index,10);
-            //   if (!isNaN(index)) {
-            //       this.game.handleWhack(index);
-            //       hitMole = true;
-            //   } }
-                
-              if (!hitMole){ // otherwise, register a miss or timeout and apply penalty
-              console.log('Something else was clicked:', clickedElement);
+              if (!hitMole){ 
+                const miss = new Audio(UI.elements.miss);
+                miss.play();
+                // otherwise, register a miss or timeout and apply penalty
                 this.game.handleMiss();
               }
           
       });
+
+      document.addEventListener('mousemove', (e) => {
+  const cursor = document.getElementById('custom-cursor');
+  cursor.style.left = `${e.pageX - 50}px`;
+  cursor.style.top = `${e.pageY - 35}px`;
+});
+
+document.addEventListener('click', () => {
+  const cursor = document.getElementById('custom-cursor');
+  cursor.style.transform = 'rotate(-80deg)';
+  setTimeout(() => {
+    cursor.style.transform = 'rotate(0deg)';
+  }, 300);
+});
+
   },
 
-  playSound(name) {
-    const audio = new Audio(this.elements.name);
-    audio.volume = 1; // Set volume to 50%
-    audio.play();
-},
+
   /**
   * Hide all primary UI overlays: main menu, tutorial, leaderboard, gameplay.
   * @sideEffect Toggles the `.hidden` class on each overlay element.
@@ -318,18 +306,8 @@ const UI = {
         mole.classList.add('mole-img');
         mole.dataset.index = i;
         mole.dataset.originalSrc = '../assets/Animation/prof1_1.png';
-        mole.dataset.whackedSrc = '../assets/Animation/prof1_dizzy1.png'; 
-
-        mole.style.position = 'absolute';
-        mole.style.width = '100%';
-        mole.style.height = '10rem';
-        mole.style.left = '50%';
-        mole.style.bottom = '0';
-        mole.style.transform = 'translate(-50%, 100%)'; // Start below hole
-        mole.style.transition = 'transform 0.3s ease-out';
-        mole.style.zIndex = '1';
-        mole.style.pointerEvents = 'none';
-
+        mole.dataset.whackedSrc = '../assets/Animation/prof1_dizzy1.png';
+        mole.style.display = 'none'; 
 
  // Append mole to the hole
         hole.appendChild(mole);
@@ -346,7 +324,8 @@ showMole(index) {
             mole.src = mole.dataset.originalSrc;
             mole.style.display = 'block'; // Show mole
             mole.style.pointerEvents = 'auto'; // Enable pointer events
-            mole.style.transform = 'translate(-50%, 0)'; // Move up to center
+            mole.style.transform = 'translate(-50%, 0)';
+            mole.style.opacity = '1'; // Move up to center
         }
     }
 },
@@ -356,9 +335,9 @@ hideMole(index) {
         this.elements.holes[index].classList.remove('mole');
         const mole = this.elements.holes[index].querySelector('.mole-img');
         if (mole) {
-            mole.style.transform = 'translate(-50%, 100%)'; // Move back down
-            mole.style.display = 'none';
+            mole.style.transform = 'translate(-50%, 50%)'; // Move back down
             mole.style.pointerEvents = 'none';
+            mole.style.opacity = '0'; // Hide mole
         }
     }
 },
@@ -570,11 +549,10 @@ class Game {
   handleWhack(index) {
           this.score += 10;
           this.activeMoles.delete(index);
-          this.ui.hideMole(index); // Let UI handle visuals
+          // // Let UI handle visuals
           this.ui.updateScoreDisplay(this.score);
-          // Add sound effect call here: this.ui.playSound('whack');
-         this.ui.playSound('Punch'); // Sound effect for
-  }
+          this.ui.hideMole(index);
+}
     /**
         * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
         * @sideEffect Updates `score`, `scoreDisplay.textContent` 
@@ -584,7 +562,6 @@ class Game {
     if (this.score < 0) this.score = 0; // minimum score is zero
     this.ui.updateScoreDisplay(this.score);
     // Add sound effect call here: this.ui.playSound('miss');
-    this.ui.playSound('miss'); // Sound effect for miss
     // this.ui.missedMole(index); // Visual feedback for missed whack
   }
  

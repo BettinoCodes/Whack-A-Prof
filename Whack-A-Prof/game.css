@@ -165,8 +165,23 @@ body {
 
   } 
 
+  .mole-img {
+    position: absolute;
+    width: 100%;
+    height: 10rem;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 100%); /* Start below the hole */
+    transition: transform 1s ease, opacity 1s ease;    
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+    display: 'none';
+}
+
+body.click
   .mole-img img{
-    display: none;
+    display: 'none';
   }
 
   @keyframes pop {
@@ -291,3 +306,192 @@ body {
   right: 10%;
   margin-right: 60px; /* optional spacing from edge */
 }
+
+
+#custom-cursor {
+  width: 128px;
+  height: 128px;
+  position: absolute;
+  pointer-events: none;
+  background: url('../assets/Animation/mallet1cursor3.png') no-repeat center center;
+  background-size: contain;
+  transform: translate(-20000px, 200px); /* offset to align the tip */
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+
+.cursor-weapon1 #custom-cursor {
+  background: url('../assets/Animation/mallet1cursor3.png') no-repeat center center;
+  background-size: contain;
+  transform: translate(-20000px, 200px); /* offset to align the tip */
+
+}
+
+.cursor-weapon2 #custom-cursor {
+  background: url('../assets/Animation/mallet2cursor3.png') no-repeat center center;
+  background-size: contain;
+  transform: translate(-20000px, 200px); /* offset to align the tip */
+}
+
+#high-scores {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#leaderboard {
+  width: 600px;
+  background-color: transparent;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header {
+  background-color: blue;
+  color: cyan;
+  font-size: 38px;
+  font-weight: bold;
+  padding: 20px;
+  height: 30px;
+  width: 50%;
+  border-top-left-radius: 300px;
+  border-top-right-radius: 300px;
+}
+
+.score-container {
+  background-color: lightgray;
+  height: 400px;
+  width: 400px;
+  border-radius: 20px;
+  overflow-y: auto;
+  position: relative;
+}
+
+
+#score-list {
+  list-style: none;
+  counter-reset: rank;
+  padding: 20px;
+  margin: 0;
+  text-align: left;
+  font-size: 32px;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#score-list li {
+  counter-increment: rank;
+  padding: 10px 10px 10px 10px;
+  position: relative;
+}
+
+#score-list li::before {
+  content: counter(rank) ".";
+  position: absolute;
+  left: 5px;
+  font-weight: bold;
+}
+
+#score-list li:first-child {
+
+  background-color: yellow;
+  font-weight: bold;
+  margin-top: 0px;
+  width: 100%;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#score-list li:nth-child(n+2) {
+  background-color: lightgray;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#tutor {
+  background-color: #dedede;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  border-radius: 10px;
+  font-family: 'Comic Sans MS', sans-serif;
+  box-sizing: border-box;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.tutorial-header {
+  background-color: red;
+  color: cyan;
+  font-size: 32px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.tutorial-boxes {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  
+}
+
+.tutorial-box {
+  background-color: orange;
+  padding: 15px;
+  width: 200px;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.character-img {
+  width: 100px;
+  height: auto;
+  margin: 10px 0;
+}
+
+.character-label {
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.instructions {
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.warning {
+  color: black;
+  text-transform: uppercase;
+}
+
+
+
+
