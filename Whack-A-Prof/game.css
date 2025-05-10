@@ -1,5 +1,5 @@
 :root{
-  --hole:120px;
+  --hole:160px;
   --gap :20px;
 }
 
@@ -47,6 +47,7 @@ body {
     border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
+    margin-right: 20px;
     transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   }
 
@@ -73,13 +74,65 @@ body {
     justify-content: center;
     align-items: center;
     border: 8px solid darkgray;
-    padding: 20px;
+    padding: 10px;
+
   }
+
+
+  #gameplay-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  #gameplay-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: row;
+    margin: 10px;
+  }
+
+  #gameplay-button button {
+    margin: 10px;
+  }
+
+  #gameplay #gameplay-header div{
+    color: yellow;
+  }
+
+  #gameplay button:hover{
+    cursor: auto;
+  }
+
+  #game{
+    background-color: #ffcc00;
+    z-index: 0;
+  }
+
+  
+  #leaderboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+
+  #tutor{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;  }
 
   .hole {
     width :var(--hole);
-    height:var(--hole);
-    background-color: #7bed9f;
+    height: 50px;
+    /* background-color: rgb(117, 12, 12); */
+    background: url('../assets/Animation/Hole.png') no-repeat center center;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -88,41 +141,39 @@ body {
     cursor: pointer;
     position: relative;
     transition: 0.2s;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+    margin: 20px;
   }
 
   .hole:hover {
-    background-color: #70a1ff;
-  }
-
-  #gameplay button:hover{
-    cursor: auto;
-  }
-  
-  #leaderboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-
-  #tutor{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+    background-color: #00b3ff;
+    box-shadow: inset 0 0 15px #00b3ff;
   }
 
   .mole {
-    background-color: #ff4757;
-    box-shadow: 0 0 20px #ff6b6b;
+    background-color: #59ff47; 
+    box-shadow: 0 0 20px #8bff6b;
     animation: pop 0.3s ease;
-  }
+    z-index: 1000;
+    transition: 1s;
+    
+  } 
+
+  .mole-img img:hover {
+    background-color: rgb(70, 0, 249);
+    filter: brightness(1.3);
+
+  } 
 
   @keyframes pop {
     0% { transform: scale(0.7); }
     100% { transform: scale(1); }
   }
+
+
+.mole:hover{
+    filter: brightness(1.2);
+}
   
   #end-game-card {
     position: fixed;
@@ -236,7 +287,3 @@ body {
   right: 10%;
   margin-right: 60px; /* optional spacing from edge */
 }
-
-
-
-

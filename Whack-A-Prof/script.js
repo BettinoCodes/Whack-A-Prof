@@ -74,6 +74,7 @@ const UI = {
       weaponSelector: document.getElementById('weapon-selection'),
     //   startScreen: document.getElementById('start-screen'),
 
+
       gameBoard: document.getElementById('game'),
       scoreDisplay: document.getElementById('score'),
       timerDisplay: document.getElementById('timer'),
@@ -89,8 +90,12 @@ const UI = {
       closeEndCardButton: null, // Will find/create later
       weapon1Btn: document.getElementById('weapon1'),
       weapon2Btn: document.getElementById('weapon2'),
+
+      Punch: '../assets/Animation/Punchsound.mp3',
+      miss: '../assets/Animation/Misssound.mp3',
     //   startButton: document.getElementById('start-button') // Assuming one start button in gameplay
   },
+
 
   // Removed invalid console.log statement
 
@@ -105,6 +110,7 @@ const UI = {
       this.updateScoreDisplay(0); // Initial display
   },
 
+
   /**
  * ─────────────────────────────────────────────────────────────────────────────
  * NAVIGATION BUTTON LISTENERS
@@ -112,7 +118,6 @@ const UI = {
  * ─────────────────────────────────────────────────────────────────────────────
 
  */
-
 
   setupEventListeners() {
       this.elements.playButton.addEventListener('click', () => this.showScreen('weaponSelector'));
@@ -172,24 +177,63 @@ const UI = {
         *             may remove `.mole` from the clicked hole.
          */
       this.elements.gameBoard.addEventListener('click', (event) => {
+        console.log('Clicked element:', event.target); 
         if (!this.game.isRunning() || this.game.isPaused()) return; // if the game isn't running/is paused, do nothing
           
           const clickedElement = event.target; // stores whatever is clicked
           let hitMole = false;
 
-          if (clickedElement.classList.contains('mole') && clickedElement.classList.contains('hole')) { // if what is clicked contains both a mole and a hole, register a whack
-              const index = parseInt(clickedElement.dataset.index,10);
-              if (!isNaN(index)) {
-                  this.game.handleWhack(index);
-                  hitMole = true;
-              } }
+            console.log('Clicked element:', event.target); 
+            console.log('Clicked element tag:', clickedElement.tagName);
+
+            const moleImg = clickedElement.closest('.mole-img');
+            const hole = clickedElement.closest('.hole');
+
+            if (moleImg && hole) {
+            const index = parseInt(hole.dataset.index, 10);
+            if (!isNaN(index)) {
+         // Set hitMole to true if a mole is clicked
+                moleImg.src = moleImg.dataset.whackedSrc;
+                
+                // Handle the whack
+                this.game.handleWhack(index);
+
+                // Try to show professor image briefly
+                // // Hide after short delay (for visual feedback)
+                // setTimeout(() => {
+                //     moleImg.style.transform = 'translate(-50%, 100%)';
+                //     moleImg.style.pointerEvents = 'none';
+                    
+                //     // Reset to original image after hiding
+                //     setTimeout(() => {
+                //         moleImg.src = moleImg.dataset.originalSrc;
+                //         moleImg.style.transition = 'transform 0.3s ease-out'; // Move back down
+                //     }, 10);
+                // }, 5000); // Show hit image briefly
+                hitMole = true;
+            }
+        } 
+             // Check if the clicked element is a mole image
+            // if (clickedElement.classList.contains('mole') && clickedElement.classList.contains('hole')) { // if what is clicked contains both a mole and a hole, register a whack
+            //   const index = parseInt(clickedElement.dataset.index,10);
+            //   if (!isNaN(index)) {
+            //       this.game.handleWhack(index);
+            //       hitMole = true;
+            //   } }
                 
               if (!hitMole){ // otherwise, register a miss or timeout and apply penalty
-              this.game.handleMiss();
+              console.log('Something else was clicked:', clickedElement);
+                this.game.handleMiss();
               }
           
       });
   },
+
+  playSound(name) {
+    const audio = new Audio(this.elements.name);
+    audio.volume = 1; // Set volume to 50%
+    audio.play();
+},
   /**
   * Hide all primary UI overlays: main menu, tutorial, leaderboard, gameplay.
   * @sideEffect Toggles the `.hidden` class on each overlay element.
@@ -201,7 +245,6 @@ const UI = {
       this.elements.highScores.classList.add('hidden');
       this.elements.gameplay.classList.add('hidden');
       this.elements.weaponSelector.classList.add('hidden');
-    //   this.elements.startScreen.classList.add('hidden');
   },
      /**
             * Show the main menu overlay and hide all others.
@@ -259,37 +302,78 @@ const UI = {
  * @sideEffect Clears `game.innerHTML`, sets grid template, and appends holes.
  */
   createHoles(rows, cols) {
-      this.elements.gameBoard.innerHTML = ''; // Clear existing
-      this.elements.holes = []; // Clear cache
-      const totalHoles = rows * cols;
-      this.elements.gameBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-      this.elements.gameBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    this.elements.gameBoard.innerHTML = '';
+    this.elements.holes = [];
+    const totalHoles = rows * cols;
+    this.elements.gameBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    this.elements.gameBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-      for (let i = 0; i < totalHoles; i++) {
-          const hole = document.createElement('div');
-          hole.classList.add('hole');
-          hole.dataset.index = i; // Cannot assign number to string, fix.
-          // Note: Click listener is now handled by delegation on gameBoard
-          this.elements.gameBoard.appendChild(hole);
-          this.elements.holes.push(hole); // Cache reference
-      }
-  },
+    for (let i = 0; i < totalHoles; i++) {
+        const hole = document.createElement('div');
+        hole.classList.add('hole');
+        hole.dataset.index = i;
 
-  showMole(index) {
-      if (this.elements.holes[index]) {
-          this.elements.holes[index].classList.add('mole');
-      }
-  },
+        const mole = document.createElement('img');
+        mole.src = '../assets/Animation/prof1_1.png';
+        mole.classList.add('mole-img');
+        mole.dataset.index = i;
+        mole.dataset.originalSrc = '../assets/Animation/prof1_1.png';
+        mole.dataset.whackedSrc = '../assets/Animation/prof1_dizzy1.png'; 
 
-  hideMole(index) {
-      if (this.elements.holes[index]) {
-          this.elements.holes[index].classList.remove('mole');
-      }
-  },
+        mole.style.position = 'absolute';
+        mole.style.width = '100%';
+        mole.style.height = '10rem';
+        mole.style.left = '50%';
+        mole.style.bottom = '0';
+        mole.style.transform = 'translate(-50%, 100%)'; // Start below hole
+        mole.style.transition = 'transform 0.3s ease-out';
+        mole.style.zIndex = '1';
+        mole.style.pointerEvents = 'none';
 
-  clearAllMoles() {
-       this.elements.holes.forEach(hole => hole.classList.remove('mole'));
-  },
+        
+ // Append mole to the hole
+        hole.appendChild(mole);
+        this.elements.gameBoard.appendChild(hole);
+        this.elements.holes.push(hole);
+    }
+},
+
+showMole(index) {
+    if (this.elements.holes[index]) {
+        this.elements.holes[index].classList.add('mole');
+        const mole = this.elements.holes[index].querySelector('.mole-img');
+        if (mole) {
+            mole.src = mole.dataset.originalSrc;
+            mole.style.display = 'block'; // Show mole
+            mole.style.pointerEvents = 'auto'; // Enable pointer events
+            mole.style.transform = 'translate(-50%, 0)'; // Move up to center
+        }
+    }
+},
+
+hideMole(index) {
+    if (this.elements.holes[index]) {
+        this.elements.holes[index].classList.remove('mole');
+        const mole = this.elements.holes[index].querySelector('.mole-img');
+        if (mole) {
+            mole.style.transform = 'translate(-50%, 100%)'; // Move back down
+            mole.style.display = 'none';
+            mole.style.pointerEvents = 'none';
+        }
+    }
+},
+
+clearAllMoles() {
+    this.elements.holes.forEach(hole => hole.classList.remove('mole'));
+    this.elements.holes.forEach(hole => {
+        const mole = hole.querySelector('.mole-img');
+        if (mole) {
+            mole.style.transform = 'translate(-50%, 100%)'; // Move back down
+            mole.style.display = 'none';
+            mole.style.pointerEvents = 'none';
+        }
+    });
+},
 
   updateScoreDisplay(score) {
       this.elements.scoreDisplay.textContent = `Score: ${score}`;
@@ -489,7 +573,7 @@ class Game {
           this.ui.hideMole(index); // Let UI handle visuals
           this.ui.updateScoreDisplay(this.score);
           // Add sound effect call here: this.ui.playSound('whack');
-
+         this.ui.playSound('Punch'); // Sound effect for
   }
     /**
      * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
@@ -500,6 +584,7 @@ class Game {
     if (this.score < 0) this.score = 0; // minimum score is zero
     this.ui.updateScoreDisplay(this.score);
     // Add sound effect call here: this.ui.playSound('miss');
+    this.ui.playSound('miss'); // Sound effect for miss
     // this.ui.missedMole(index); // Visual feedback for missed whack
   }
  
