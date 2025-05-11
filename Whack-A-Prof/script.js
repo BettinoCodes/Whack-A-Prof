@@ -40,19 +40,20 @@ function getHighScores() {
  * 
  * @function saveHighScore
  * @param {number} newScore - The new score to save.
+ * @param {string} [playerName="Anonymous"] - The name of the player who achieved the score.
  * @returns {void}
  * @example
- * saveHighScore(1500);
+ * saveHighScore(1500, "Player1");
  * The function includes a check to ensure that the score is a valid number and greater than zero.
  */
-function saveHighScore(newScore) {
+function saveHighScore(newScore, playerName = "Anonymous") {
     if (typeof newScore !== 'number' || isNaN(newScore) || newScore <= 0) {
         return;
     }
 
     const scores = getHighScores();
-    scores.push(newScore);
-    scores.sort((a, b) => b - a); // Sort descending (highest first)
+    scores.push({ name: playerName, score: newScore });
+    scores.sort((a, b) => b.score - a.score); // Sort descending by score property
     const updatedScores = scores.slice(0, config.MAX_HIGH_SCORES); // Keep only top N scores
 
     try {
@@ -369,16 +370,40 @@ clearAllMoles() {
           this.elements.endGameCard.innerHTML = `<div class="card-content">
               <h2>Game Over!</h2>
               <p>Your final score: <span class="final-score"></span></p>
-              <button class="close-end-card-button">Close</button>
+              <div class="name-input-container">
+                  <p>Enter your name for the high score:</p>
+                  <input type="text" class="player-name-input" placeholder="Anonymous" maxlength="20">
+              </div>
+              <div class="end-game-buttons">
+                  <button class="save-score-button">Save Score</button>
+                  <button class="close-end-card-button">Close</button>
+              </div>
           </div>`;
           content = this.elements.endGameCard.querySelector('.card-content');
           this.elements.endGameScore = content.querySelector('.final-score');
+          this.elements.playerNameInput = content.querySelector('.player-name-input');
+          this.elements.saveScoreButton = content.querySelector('.save-score-button');
           this.elements.closeEndCardButton = content.querySelector('.close-end-card-button');
-           // Add listener only once
-           this.elements.closeEndCardButton.addEventListener('click', () => {
-               this.hideEndGame();
-               this.game.reset(); // Let game handle reset logic
-           });
+          
+          // Add save score listener
+          this.elements.saveScoreButton.addEventListener('click', () => {
+              const playerName = this.elements.playerNameInput.value.trim() || "Anonymous";
+              saveHighScore(finalScore, playerName);
+              // Close the popup after saving
+              this.hideEndGame();
+              this.game.reset(); // Reset the game for next round
+          });
+          
+          // Add close button listener
+          this.elements.closeEndCardButton.addEventListener('click', () => {
+              this.hideEndGame();
+              this.game.reset(); // Let game handle reset logic
+          });
+      } else {
+          // Reset the form for a new game
+          if (this.elements.playerNameInput) {
+              this.elements.playerNameInput.value = '';
+          }
       }
 
       this.elements.endGameScore.textContent = finalScore;
@@ -425,9 +450,15 @@ clearAllMoles() {
     if (scores.length === 0) {
         listElement.innerHTML = '<li>No high scores yet!</li>';
     } else {
-        scores.forEach((score) => {
+        scores.forEach((scoreObj) => {
             const listItem = document.createElement('li');
-            listItem.textContent = `${score}`; // Score
+            // Handle both legacy number format and new object format
+            if (typeof scoreObj === 'object' && scoreObj !== null) {
+                listItem.textContent = `${scoreObj.name}: ${scoreObj.score}`;
+            } else {
+                // Legacy support for old format (plain numbers)
+                listItem.textContent = `Anonymous: ${scoreObj}`;
+            }
             listElement.appendChild(listItem);
         });
     }
@@ -496,7 +527,8 @@ class Game {
       // Only show end game card if it wasn't a pause->stop scenario
       // Or maybe always show it when stopped? Let's show it.
       this.ui.displayEndGame(this.score);
-      saveHighScore(this.score);
+      
+      // The name input and score saving is now handled by the end game card UI
 
       // Reset button states for next game potential
       this.ui.setButtonState('start', 'Start Game');
