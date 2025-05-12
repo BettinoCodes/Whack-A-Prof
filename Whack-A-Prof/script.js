@@ -10,6 +10,11 @@ const config = {
   MAX_HIGH_SCORES: 10 // Limit leaderboard to top 10
 };
 
+
+
+
+
+
 // -- Local Storage for Scores
 /**
  * Retrieves high scores from local storage.
@@ -34,6 +39,10 @@ function getHighScores() {
         return [];
     }
 }
+
+
+
+
 // -- Save High Score
 /**
  * Saves a new high score to local storage.
@@ -63,6 +72,11 @@ function saveHighScore(newScore, playerName = "Anonymous") {
         console.error("Error saving high scores to localStorage:", e);
     }
 }
+
+
+
+
+
 // --- UI Module ---
 const UI = {
   // DOM Elements
@@ -94,15 +108,19 @@ const UI = {
       cursor: document.getElementById('custom-cursor'),
       gameplayscreen: document.getElementById('game-play'),
 
-
+      // Sounds
       Punch: '../assets/Animation/Punchsound.mp3',
       miss: '../assets/Animation/Misssound.mp3',
+      go: '../assets/Animation/gosoundeffect.mp3',
 
       originalSrc:'../assets/Animation/prof1_1.png',
       whackedSrc:'../assets/Animation/prof1_dizzy1.png',
 
     //   startButton: document.getElementById('start-button') // Assuming one start button in gameplay
   },
+
+
+
 
 
   // Removed invalid console.log statement
@@ -119,6 +137,9 @@ const UI = {
   },
 
 
+
+
+
   /**
  * ─────────────────────────────────────────────────────────────────────────────
  * NAVIGATION BUTTON LISTENERS
@@ -126,16 +147,24 @@ const UI = {
  * ─────────────────────────────────────────────────────────────────────────────
 
  */
-
   setupEventListeners() {
       this.elements.playButton.addEventListener('click', () => this.showScreen('weaponSelector'));
       this.elements.tutorialButton.addEventListener('click', () => this.showScreen('tutorial'));
       this.elements.leaderboardButton.addEventListener('click', () => this.showScreen('highScores'));
+
+
+
+
+
        this.elements.weapon1Btn.addEventListener("click", () => {
         document.body.classList.remove("cursor-weapon2");
         document.body.classList.add("cursor-weapon1");
         this.showScreen("gameplay");
         });
+
+
+
+
 
         this.elements.weapon2Btn.addEventListener("click", () => {
         document.body.classList.remove("cursor-weapon1");
@@ -143,6 +172,10 @@ const UI = {
         this.showScreen("gameplay");
         }); //   this.elements.startButton.addEventListener('click', () => this.showScreen('mainMenu'));
       
+
+
+
+
     /**
      * Return-to-main-menu buttons.
      * Each .back-button closes the current overlay and shows the main menu.
@@ -151,20 +184,32 @@ const UI = {
           button.addEventListener('click', () => this.showScreen('mainMenu'));
       });
 
+
+
+
+
       this.elements.startGameButton.addEventListener('click', () => {
           // Toggle between Start and Stop
           if (this.game.isRunning() || this.game.isPaused()) {
                this.game.stop(); // Use stop for manual ending
           } else {
+                const startsound = new Audio(UI.elements.go);
+                startsound.play();
                this.game.start();
           }
       });
+
+
+
+
 
       this.elements.pauseButton.addEventListener('click', () => {
            this.game.togglePause();
       });
       
       
+
+
 
       /**
         * Handle a click on a hole: award or deduct points, update score display.
@@ -183,6 +228,9 @@ const UI = {
             const moleImg = clickedElement.closest('.mole-img');
             const hole = clickedElement.closest('.hole');
 
+            const whackSound = new Audio(UI.elements.Punch);
+            const miss = new Audio(UI.elements.miss);
+
             if (moleImg && hole) {
             const index = parseInt(hole.dataset.index, 10);
             if (!isNaN(index)) {
@@ -190,7 +238,6 @@ const UI = {
          //  is clicked
          
                 moleImg.src = moleImg.dataset.whackedSrc; // Change to dizzy image
-                const whackSound = new Audio(UI.elements.Punch);
                 whackSound.play();
                 // Handle the whack
                 this.game.handleWhack(index);
@@ -198,7 +245,7 @@ const UI = {
             }
         } 
               if (!hitMole){ 
-                const miss = new Audio(UI.elements.miss);
+
                 miss.play();
                 // otherwise, register a miss or timeout and apply penalty
                 this.game.handleMiss();
@@ -206,11 +253,17 @@ const UI = {
           
       });
 
+
+
+
       document.addEventListener('mousemove', (e) => {
   const cursor = document.getElementById('custom-cursor');
   cursor.style.left = `${e.pageX - 50}px`;
   cursor.style.top = `${e.pageY - 35}px`;
 });
+
+
+
 
 document.addEventListener('click', () => {
   const cursor = document.getElementById('custom-cursor');
@@ -221,6 +274,9 @@ document.addEventListener('click', () => {
 });
 
   },
+
+
+
 
 
   /**
@@ -235,6 +291,11 @@ document.addEventListener('click', () => {
       this.elements.gameplay.classList.add('hidden');
       this.elements.weaponSelector.classList.add('hidden');
   },
+
+
+
+
+
      /**
             * Show the main menu overlay and hide all others.
             * @sideEffect Calls hideAllScreens(), then removes `.hidden` from respective screen.
@@ -266,6 +327,11 @@ document.addEventListener('click', () => {
               break;
         }
   },
+
+
+
+
+
   /**
  * Recalculate grid hole size and gap based on viewport dimensions,
  * then update CSS variables `--hole` and `--gap`. Also resets timer display.
@@ -283,6 +349,11 @@ document.addEventListener('click', () => {
       document.documentElement.style.setProperty('--hole', `${holeSize}px`);
       document.documentElement.style.setProperty('--gap', `${gapSize}px`);
   },
+
+
+
+
+
 
   /**
  * Build a `rows × cols` grid of clickable hole `<div>`s inside `game`.
@@ -317,6 +388,11 @@ document.addEventListener('click', () => {
     }
 },
 
+
+
+
+
+
 showMole(index) {
     if (this.elements.holes[index]) {
         this.elements.holes[index].classList.add('mole');
@@ -331,6 +407,11 @@ showMole(index) {
     }
 },
 
+
+
+
+
+
 hideMole(index) {
     if (this.elements.holes[index]) {
         this.elements.holes[index].classList.remove('mole');
@@ -342,6 +423,11 @@ hideMole(index) {
         }
     }
 },
+
+
+
+
+
 
 clearAllMoles() {
     this.elements.holes.forEach(hole => hole.classList.remove('mole'));
@@ -355,13 +441,25 @@ clearAllMoles() {
     });
 },
 
+
+
+
+
   updateScoreDisplay(score) {
       this.elements.scoreDisplay.textContent = `Score: ${score}`;
   },
 
+
+
+
+
   updateTimerDisplay(timeLeft, isPaused) {
       this.elements.timerDisplay.textContent = `Time Left: ${timeLeft}${isPaused ? ' (Paused)' : ''}`;
   },
+
+
+
+
 
   displayEndGame(finalScore) {
       // Ensure the card content exists or create it
@@ -410,9 +508,17 @@ clearAllMoles() {
       this.elements.endGameCard.style.display = 'flex';
   },
 
+
+
+
+
   hideEndGame() {
       this.elements.endGameCard.style.display = 'none';
   },
+
+
+
+
 
   setButtonState(buttonName, text, disabled = false) {
       let buttonElement;
@@ -430,6 +536,11 @@ clearAllMoles() {
            buttonElement.disabled = disabled;
       }
   },
+
+
+
+
+
   displayHighScores() {
     const scores = getHighScores(); // Uses the helper function
     // Make sure we're using the correct reference here
@@ -484,6 +595,11 @@ class Game {
   countdownIntervalId = null;
   spawnTimeoutId = null;
 
+
+
+
+
+
   // --- Core Logic Methods ---
   /**
     * Start or stop a game round. On first call, resets state, begins spawn loop and countdown.
@@ -507,6 +623,10 @@ class Game {
       this._scheduleNextSpawn();
       this._startTimer();
   }
+
+
+
+
 
   /**
  * End the current game: clear timers, show the “Game Over” card, and display final score.
@@ -534,6 +654,11 @@ class Game {
       this.ui.setButtonState('start', 'Start Game');
       this.ui.setButtonState('pause', 'Pause', true); // Disable pause
   }
+
+
+
+
+
   /**
  * Reset all game state to initial values, clear timers, and hide game over card.
  * @sideEffect Clears timeouts/intervals, resets flags, removes moles, hides overlay.
@@ -556,6 +681,11 @@ class Game {
       this.ui.setButtonState('pause', 'Pause', true); // Disable pause
   }
 
+
+
+
+
+
   togglePause() {
       if (!this.gameRunning) return; // Can't pause if not running
 
@@ -572,6 +702,12 @@ class Game {
       // Update timer display regardless
       this.ui.updateTimerDisplay(this.timeLeft, this.gamePaused);
   }
+
+
+
+
+
+
 /**
  * Handle a successful click on a mole: award points, update score display.
  * @sideEffect Updates `score`, `scoreDisplay.textContent`, and
@@ -585,6 +721,12 @@ class Game {
           this.ui.updateScoreDisplay(this.score);
           this.ui.hideMole(index);
 }
+
+
+
+
+
+
     /**
         * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
         * @sideEffect Updates `score`, `scoreDisplay.textContent` 
@@ -596,6 +738,9 @@ class Game {
     // Add sound effect call here: this.ui.playSound('miss');
     // this.ui.missedMole(index); // Visual feedback for missed whack
   }
+
+
+
  
 
   // --- Internal Helper Methods ---
@@ -609,6 +754,12 @@ class Game {
           this.stop(); // Game over due to time
       }
   }
+
+
+
+
+
+
   /**
  * Spawn a mole in a random empty hole, keep it visible for `characterDuration`,
  * then remove it. Recursively schedules the next spawn at a random interval.
@@ -649,6 +800,10 @@ class Game {
       }
   }
 
+
+
+
+
   _scheduleNextSpawn() {
       if (!this.gameRunning || this.gamePaused) return; // Don't schedule if not running or paused
 
@@ -664,6 +819,10 @@ class Game {
       }, nextInterval);
   }
 
+
+
+
+
   _startTimer() {
       // Prevent multiple timers
       if (this.countdownIntervalId) {
@@ -672,6 +831,10 @@ class Game {
       this.countdownIntervalId = setInterval(() => this._tick(), 1000);
   }
 
+
+
+
+
   _clearTimers() {
       clearInterval(this.countdownIntervalId);
       clearTimeout(this.spawnTimeoutId);
@@ -679,14 +842,23 @@ class Game {
       this.spawnTimeoutId = null;
   }
 
+
+
+
   isRunning() {
        return this.gameRunning;
   }
+
+
+
 
   isPaused() {
       return this.gamePaused;
   }
 }
+
+
+
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
