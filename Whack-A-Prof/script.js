@@ -307,7 +307,7 @@ document.addEventListener('click', () => {
         mole.classList.add('mole-img');
         mole.dataset.index = i;
         mole.dataset.originalSrc = '../assets/Animation/prof1_1.png';
-        mole.dataset.whackedSrc = '../assets/Animation/prof1_dizzyexp.png';
+        mole.dataset.whackedSrc = '../assets/Animation/bloodyprof.png';
         mole.style.display = 'none'; 
 
  // Append mole to the hole
