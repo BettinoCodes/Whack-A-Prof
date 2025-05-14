@@ -7,11 +7,20 @@ const config = {
   spawnIntervalMin: 500, // ms
   spawnIntervalMax: 1500, // ms
   HIGH_SCORES_KEY: 'whackAProfHighScores',
-  MAX_HIGH_SCORES: 10 // Limit leaderboard to top 10
+  MAX_HIGH_SCORES: 10, // Limit leaderboard to top 10
+  
+  // Trustee configuration
+  trusteeProbability: 0.05, // 5% probability for trustee appearance
+  trusteePoints: 20, // Points awarded for hitting a trustee
+  explosionDuration: 250, // Duration of explosion animation in ms
+  
+  // Asset paths centralized here
+  assets: {
+    bloodImg: '../assets/Animation/blood.png',
+    boomImg: '../assets/final/Boom.png',
+    screamSound: '../assets/Animation/wilhelm-scream.wav'
+  }
 };
-
-
-
 
 
 
@@ -115,6 +124,8 @@ const UI = {
 
       originalSrc:'../assets/Animation/prof1_1.png',
       whackedSrc:'../assets/Animation/prof1_dizzy1.png',
+      trusteeOriginalSrc: '../assets/Animation/trustee.png',
+      trusteeWhackedSrc: '../assets/final/Trustee_Explode_once 1.png',
 
     //   startButton: document.getElementById('start-button') // Assuming one start button in gameplay
   },
@@ -242,6 +253,7 @@ const UI = {
                 // Handle the whack
                 this.game.handleWhack(index);
                 hitMole = true;
+                // Note: trustee explosion now handled in Game.handleWhack
             }
         } 
               if (!hitMole){ 
@@ -393,12 +405,19 @@ document.addEventListener('click', () => {
 
 
 
-showMole(index) {
+showMole(index, isTrustee = false) {
     if (this.elements.holes[index]) {
         this.elements.holes[index].classList.add('mole');
         const mole = this.elements.holes[index].querySelector('.mole-img');
         if (mole) {
-            mole.src = mole.dataset.originalSrc;
+            // Set appropriate image based on character type
+            mole.src = isTrustee ? this.elements.trusteeOriginalSrc : this.elements.originalSrc;
+            mole.dataset.originalSrc = isTrustee ? this.elements.trusteeOriginalSrc : this.elements.originalSrc;
+            mole.dataset.whackedSrc = isTrustee ? this.elements.trusteeWhackedSrc : this.elements.whackedSrc;
+            
+            // Store whether this is a trustee in a data attribute
+            mole.dataset.isTrustee = isTrustee;
+            
             mole.style.display = 'block'; // Show mole
             mole.style.pointerEvents = 'auto'; // Enable pointer events
             mole.style.transform = 'translate(-50%, 0)';
@@ -584,21 +603,130 @@ class Game {
       this.ui = ui;
       this.config = config;
       this.reset(); // Initialize state
+      this.createExplosionOverlay(); // Initialize explosion overlay
   }
 
   // --- State ---
   score = 0;
   timeLeft = 0;
   activeMoles = new Set(); // Track active mole indices
+  activeTrustees = new Set(); // Track active trustee indices
   gameRunning = false;
   gamePaused = false;
   countdownIntervalId = null;
   spawnTimeoutId = null;
+  elements = {
+    bloodOverlay: null
+  };
 
+  createExplosionOverlay() {
+      // Create blood overlay that covers the screen
+      const bloodOverlay = document.createElement('div');
+      bloodOverlay.id = 'blood-overlay';
+      bloodOverlay.style.position = 'fixed';
+      bloodOverlay.style.top = '0';
+      bloodOverlay.style.left = '0';
+      bloodOverlay.style.width = '100%';
+      bloodOverlay.style.height = '100%';
+      bloodOverlay.style.display = 'none';
+      bloodOverlay.style.zIndex = '2000';
+      bloodOverlay.style.pointerEvents = 'none'; // Allow clicks to pass through
+      bloodOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.2)'; // Light red tint
+      
+      // Create blood image without setting the src yet
+      // (we'll set it in reset() when UI is definitely available)
+      const bloodImg = document.createElement('img');
+      bloodImg.style.width = '100%';
+      bloodImg.style.height = '100%';
+      bloodImg.style.objectFit = 'cover';
+      bloodImg.style.opacity = '0.7';
+      bloodImg.style.animation = 'pulse-animation 0.25s 1';
+      
+      // Add keyframe animation to the document if it doesn't exist
+      if (!document.getElementById('blood-animation-style')) {
+          const bloodAnimationStyle = document.createElement('style');
+          bloodAnimationStyle.id = 'blood-animation-style';
+          bloodAnimationStyle.textContent = `
+              @keyframes pulse-animation {
+                  0% { opacity: 0; transform: scale(0.8); }
+                  50% { opacity: 0.9; transform: scale(1.05); }
+                  100% { opacity: 0.7; transform: scale(1); }
+              }
+              
+              @keyframes explode-animation {
+                  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+                  100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+              }
+          `;
+          document.head.appendChild(bloodAnimationStyle);
+      }
+      
+      bloodOverlay.appendChild(bloodImg);
+      document.body.appendChild(bloodOverlay);
+      this.elements.bloodOverlay = bloodOverlay;
+      this.elements.bloodImg = bloodImg; // Store reference for setting src later
+  }
 
+  showExplosionAnimation(index) {
+      // Play the scream sound effect
+      const screamSound = new Audio(this.config.assets.screamSound);
+      screamSound.play();
+      
+      // Show blood overlay over the entire screen
+      if (this.elements.bloodOverlay) {
+          this.elements.bloodOverlay.style.display = 'block';
+          
+          // Hide blood overlay after the specified duration
+          setTimeout(() => {
+              this.hideExplosionAnimation();
+          }, this.config.explosionDuration);
+      }
+      
+      // Apply explosion effect directly on the mole/trustee
+      if (index !== undefined && this.ui.elements.holes[index]) {
+          const hole = this.ui.elements.holes[index];
+          const moleImg = hole.querySelector('.mole-img');
+          if (moleImg) {
+              // Add an explosion effect directly on the character
+              const explosionEffect = document.createElement('img');
+              // Use config's explosion source for the boom effect
+              explosionEffect.src = this.config.assets.boomImg;
+              explosionEffect.className = 'explosion-effect';
+              explosionEffect.style.position = 'absolute';
+              explosionEffect.style.width = '150%';
+              explosionEffect.style.height = 'auto';
+              explosionEffect.style.left = '50%';
+              explosionEffect.style.top = '50%';
+              explosionEffect.style.transform = 'translate(-50%, -50%)';
+              explosionEffect.style.zIndex = '1500';
+              explosionEffect.style.pointerEvents = 'none';
+              explosionEffect.style.animation = 'explode-animation 0.25s 1';
+              
+              hole.appendChild(explosionEffect);
+              
+              // Remove the explosion effect after animation
+              setTimeout(() => {
+                  hole.removeChild(explosionEffect);
+              }, this.config.explosionDuration);
+          }
+      }
+  }
 
+  hideExplosionAnimation() {
+      if (this.elements.bloodOverlay) {
+          this.elements.bloodOverlay.style.display = 'none';
+      }
+  }
 
-
+  // Method to update all explosion-related resources with config paths
+  updateExplosionResources() {
+      // Only proceed if elements are available
+      if (this.elements.bloodImg) {
+          // Use centralized config paths
+          this.elements.bloodImg.src = this.config.assets.bloodImg;
+      }
+  }
 
   // --- Core Logic Methods ---
   /**
@@ -667,12 +795,14 @@ class Game {
       this.score = 0;
       this.timeLeft = this.config.availableTime;
       this.activeMoles.clear();
+      this.activeTrustees.clear();
       this.gameRunning = false;
       this.gamePaused = false;
 
       this._clearTimers();
       this.ui.clearAllMoles();
       this.ui.hideEndGame();
+      this.hideExplosionAnimation(); // Ensure explosion overlay is hidden
 
       // Update UI to reflect reset state
       this.ui.updateScoreDisplay(this.score);
@@ -712,15 +842,24 @@ class Game {
  * Handle a successful click on a mole: award points, update score display.
  * @sideEffect Updates `score`, `scoreDisplay.textContent`, and
  *             may remove `.mole` from the clicked hole.
- * @param index
+ * @param index - The index of the hole that was whacked
  */
   handleWhack(index) {
-          this.score += 10;
+          // Check if this is a trustee
+          if (this.activeTrustees.has(index)) {
+              this.score += this.config.trusteePoints; // Award bonus points for trustee
+              this.activeTrustees.delete(index);
+              // Show explosion animation for trustees
+              this.showExplosionAnimation(index);
+          } else {
+              this.score += 10; // Regular points for professor
+          }
+          
           this.activeMoles.delete(index);
-          // // Let UI handle visuals
+          // Let UI handle visuals
           this.ui.updateScoreDisplay(this.score);
           this.ui.hideMole(index);
-}
+  }
 
 
 
@@ -779,9 +918,18 @@ class Game {
       if (availableHoleIndices.length > 0) {
           const randomIndex = Math.floor(Math.random() * availableHoleIndices.length);
           const holeIndex = availableHoleIndices[randomIndex];
-
+          
+          // Randomly decide if this should be a trustee (5-10% chance)
+          const isTrustee = Math.random() < this.config.trusteeProbability;
+          
+          // Track the mole in appropriate sets
           this.activeMoles.add(holeIndex);
-          this.ui.showMole(holeIndex);
+          if (isTrustee) {
+              this.activeTrustees.add(holeIndex);
+          }
+          
+          // Show the mole with appropriate image
+          this.ui.showMole(holeIndex, isTrustee);
 
           // Schedule removal AND PENALTY
           setTimeout(() => {
@@ -794,6 +942,9 @@ class Game {
                     // Visual feedback call here: this.ui.showExpiryFeedback(holeIndex);
                     // Add sound effect call here: this.ui.playSound('expire');
                     this.activeMoles.delete(holeIndex);
+                    if (isTrustee) {
+                        this.activeTrustees.delete(holeIndex);
+                    }
                     this.ui.hideMole(holeIndex);
                }
           }, this.config.characterDuration);
@@ -864,4 +1015,5 @@ class Game {
 document.addEventListener('DOMContentLoaded', () => {
   const whackAMoleGame = new Game(UI, config);
   UI.init(whackAMoleGame); // Pass the game instance to UI and initialize UI
+  whackAMoleGame.updateExplosionResources(); // Update explosion resources after UI is initialized
 });
