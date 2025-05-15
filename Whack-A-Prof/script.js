@@ -840,9 +840,9 @@ class Game {
 
 /**
  * Handle a successful click on a mole: award points, update score display.
- * @sideEffect Updates `score`, `scoreDisplay.textContent`, and
- *             may remove `.mole` from the clicked hole.
- * @param index - The index of the hole that was whacked
+ * @sideEffect Updates the `score` property, updates the score display via UI, and may remove `.mole` from the clicked hole.
+ * @param {number} index - The index of the hole that was whacked.
+ * @returns {void}
  */
   handleWhack(index) {
           // Check if this is a trustee
@@ -868,7 +868,8 @@ class Game {
 
     /**
         * Handle an unsuccessful click on a hole or the game board: deduct points, update score display.
-        * @sideEffect Updates `score`, `scoreDisplay.textContent` 
+        * @sideEffect Updates the `score` property and updates the score display via UI.
+        * @returns {void}
          */
   handleMiss(){
     this.score -= 5; // Penalty for missed whack
