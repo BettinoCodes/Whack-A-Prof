@@ -27,14 +27,11 @@ const config = {
 // -- Local Storage for Scores
 /**
  * Retrieves high scores from local storage.
- * 
- * @function getHighScores
  * @returns {Array} An array of high score objects. Returns an empty array if no scores exist,
  *                  if the stored item is not an array, or if there is an error parsing the JSON.
- * @throws {Error} Logs error to console if JSON parsing fails but still returns an empty array.
  * @example
  * const highScores = getHighScores();
- * highScores = [{name: "Player1", score: 1000}, {name: "Player2", score: 900}]
+ * // highScores = [{name: "Player1", score: 1000}, {name: "Player2", score: 900}]
  */
 function getHighScores() {
     const scoresJSON = localStorage.getItem(config.HIGH_SCORES_KEY);
@@ -55,14 +52,11 @@ function getHighScores() {
 // -- Save High Score
 /**
  * Saves a new high score to local storage.
- * 
- * @function saveHighScore
  * @param {number} newScore - The new score to save.
  * @param {string} [playerName="Anonymous"] - The name of the player who achieved the score.
  * @returns {void}
  * @example
  * saveHighScore(1500, "Player1");
- * The function includes a check to ensure that the score is a valid number and greater than zero.
  */
 function saveHighScore(newScore, playerName = "Anonymous") {
     if (typeof newScore !== 'number' || isNaN(newScore) || newScore <= 0) {
@@ -136,6 +130,12 @@ const UI = {
 
   // Removed invalid console.log statement
 
+  /**
+   * Initialize the UI module.
+   * @param {Game} gameInstance - The game instance to associate with the UI.
+   * @sideEffect Sets up event listeners, scales the board, and shows the main menu.
+   * @returns {void}
+   */
   init(gameInstance) {
       this.game = gameInstance; // Reference to the game logic instance
       this.setupEventListeners();
@@ -152,11 +152,9 @@ const UI = {
 
 
   /**
- * ─────────────────────────────────────────────────────────────────────────────
- * NAVIGATION BUTTON LISTENERS
- * Wire up your menu / tutorial / leaderboard buttons.
- * ─────────────────────────────────────────────────────────────────────────────
-
+ * Wire up menu, tutorial, leaderboard, and gameplay buttons.
+ * @sideEffect Adds event listeners to UI elements.
+ * @returns {void}
  */
   setupEventListeners() {
       this.elements.playButton.addEventListener('click', () => this.showScreen('weaponSelector'));
@@ -227,6 +225,7 @@ const UI = {
         * @param {MouseEvent} event
         * @sideEffect Updates `score`, `scoreDisplay.textContent`, and
         *             may remove `.mole` from the clicked hole.
+        * @returns {void}
          */
       this.elements.gameBoard.addEventListener('click', (event) => {
         console.log('Clicked element:', event.target); 
@@ -294,8 +293,8 @@ document.addEventListener('click', () => {
   /**
   * Hide all primary UI overlays: main menu, tutorial, leaderboard, gameplay.
   * @sideEffect Toggles the `.hidden` class on each overlay element.
+  * @returns {void}
   */
-
   hideAllScreens() {
       this.elements.mainMenu.classList.add('hidden');
       this.elements.tutorial.classList.add('hidden');
@@ -309,8 +308,10 @@ document.addEventListener('click', () => {
 
 
      /**
-            * Show the main menu overlay and hide all others.
-            * @sideEffect Calls hideAllScreens(), then removes `.hidden` from respective screen.
+            * Show the specified screen overlay and hide all others.
+            * @param {string} screenName - The name of the screen to show (e.g., 'mainMenu', 'gameplay').
+            * @sideEffect Calls hideAllScreens(), then removes `.hidden` from the respective screen.
+            * @returns {void}
              */
   showScreen(screenName) {
       this.hideAllScreens();
@@ -347,7 +348,8 @@ document.addEventListener('click', () => {
   /**
  * Recalculate grid hole size and gap based on viewport dimensions,
  * then update CSS variables `--hole` and `--gap`. Also resets timer display.
- * @sideEffect Updates `timerDisplay.textContent` and CSS vars on `<html>`.
+ * @sideEffect Updates timer display and CSS vars on <html>.
+ * @returns {void}
  */
 
   scaleBoard() {
@@ -368,10 +370,11 @@ document.addEventListener('click', () => {
 
 
   /**
- * Build a `rows × cols` grid of clickable hole `<div>`s inside `game`.
+ * Build a `rows × cols` grid of clickable hole <div>s inside game.
  * @param {number} rows  Number of grid rows.
  * @param {number} cols  Number of grid columns.
- * @sideEffect Clears `game.innerHTML`, sets grid template, and appends holes.
+ * @sideEffect Clears game.innerHTML, sets grid template, and appends holes.
+ * @returns {void}
  */
   createHoles(rows, cols) {
     this.elements.gameBoard.innerHTML = '';
@@ -405,6 +408,13 @@ document.addEventListener('click', () => {
 
 
 
+/**
+ * Show a mole or trustee in the specified hole.
+ * @param {number} index - The index of the hole.
+ * @param {boolean} [isTrustee=false] - Whether the character is a trustee.
+ * @sideEffect Updates the DOM to show the mole/trustee.
+ * @returns {void}
+ */
 showMole(index, isTrustee = false) {
     if (this.elements.holes[index]) {
         this.elements.holes[index].classList.add('mole');
@@ -431,6 +441,12 @@ showMole(index, isTrustee = false) {
 
 
 
+/**
+ * Hide the mole in the specified hole.
+ * @param {number} index - The index of the hole.
+ * @sideEffect Updates the DOM to hide the mole.
+ * @returns {void}
+ */
 hideMole(index) {
     if (this.elements.holes[index]) {
         this.elements.holes[index].classList.remove('mole');
@@ -448,6 +464,11 @@ hideMole(index) {
 
 
 
+/**
+ * Remove all moles from the board.
+ * @sideEffect Updates the DOM to hide all moles.
+ * @returns {void}
+ */
 clearAllMoles() {
     this.elements.holes.forEach(hole => hole.classList.remove('mole'));
     this.elements.holes.forEach(hole => {
@@ -464,6 +485,12 @@ clearAllMoles() {
 
 
 
+/**
+ * Update the score display in the UI.
+ * @param {number} score - The current score to display.
+ * @sideEffect Updates the score display element.
+ * @returns {void}
+ */
   updateScoreDisplay(score) {
       this.elements.scoreDisplay.textContent = `Score: ${score}`;
   },
@@ -472,6 +499,13 @@ clearAllMoles() {
 
 
 
+/**
+ * Update the timer display in the UI.
+ * @param {number} timeLeft - The time left in seconds.
+ * @param {boolean} isPaused - Whether the game is paused.
+ * @sideEffect Updates the timer display element.
+ * @returns {void}
+ */
   updateTimerDisplay(timeLeft, isPaused) {
       this.elements.timerDisplay.textContent = `Time Left: ${timeLeft}${isPaused ? ' (Paused)' : ''}`;
   },
@@ -480,6 +514,12 @@ clearAllMoles() {
 
 
 
+/**
+ * Display the end game card with the final score and name input.
+ * @param {number} finalScore - The final score to display.
+ * @sideEffect Shows the end game card and sets up event listeners.
+ * @returns {void}
+ */
   displayEndGame(finalScore) {
       // Ensure the card content exists or create it
       let content = this.elements.endGameCard.querySelector('.card-content');
@@ -531,6 +571,11 @@ clearAllMoles() {
 
 
 
+/**
+ * Hide the end game card.
+ * @sideEffect Hides the end game card element.
+ * @returns {void}
+ */
   hideEndGame() {
       this.elements.endGameCard.style.display = 'none';
   },
@@ -539,6 +584,14 @@ clearAllMoles() {
 
 
 
+/**
+ * Set the text and disabled state of a button.
+ * @param {string} buttonName - The name of the button ('start', 'pause', etc.).
+ * @param {string} text - The text to display on the button.
+ * @param {boolean} [disabled=false] - Whether the button should be disabled.
+ * @sideEffect Updates the button element.
+ * @returns {void}
+ */
   setButtonState(buttonName, text, disabled = false) {
       let buttonElement;
       switch (buttonName) {
@@ -560,6 +613,11 @@ clearAllMoles() {
 
 
 
+/**
+ * Display the high scores list in the UI.
+ * @sideEffect Updates the high scores list element.
+ * @returns {void}
+ */
   displayHighScores() {
     const scores = getHighScores(); // Uses the helper function
     // Make sure we're using the correct reference here
@@ -619,6 +677,11 @@ class Game {
     bloodOverlay: null
   };
 
+  /**
+   * Create explosion overlay for trustee whack animation.
+   * @sideEffect Adds explosion overlay to the DOM.
+   * @returns {void}
+   */
   createExplosionOverlay() {
       // Create blood overlay that covers the screen
       const bloodOverlay = document.createElement('div');
@@ -668,6 +731,12 @@ class Game {
       this.elements.bloodImg = bloodImg; // Store reference for setting src later
   }
 
+  /**
+   * Show explosion animation and sound for a trustee whack.
+   * @param {number} index - The index of the hole where the explosion occurs.
+   * @sideEffect Plays sound and shows explosion overlay and effect.
+   * @returns {void}
+   */
   showExplosionAnimation(index) {
       // Play the scream sound effect
       const screamSound = new Audio(this.config.assets.screamSound);
@@ -713,13 +782,22 @@ class Game {
       }
   }
 
+  /**
+   * Hide the explosion animation overlay.
+   * @sideEffect Hides the explosion overlay element.
+   * @returns {void}
+   */
   hideExplosionAnimation() {
       if (this.elements.bloodOverlay) {
           this.elements.bloodOverlay.style.display = 'none';
       }
   }
 
-  // Method to update all explosion-related resources with config paths
+  /**
+   * Update all explosion-related resources with config paths.
+   * @sideEffect Updates the blood image source.
+   * @returns {void}
+   */
   updateExplosionResources() {
       // Only proceed if elements are available
       if (this.elements.bloodImg) {
@@ -733,6 +811,7 @@ class Game {
     * Start or stop a game round. On first call, resets state, begins spawn loop and countdown.
     * On second call (while `gameRunning`), ends the round immediately.
     * @sideEffect Toggles `gameRunning`, updates buttons, and manages timers.
+    * @returns {void}
     */
   start() {
       if (this.gameRunning) return; // Prevent multiple starts
@@ -758,7 +837,8 @@ class Game {
 
   /**
  * End the current game: clear timers, show the “Game Over” card, and display final score.
- * @sideEffect Clears `nextCharacterTimeout`, `countdownTimer`, toggles UI elements.
+ * @sideEffect Clears timers, toggles UI elements, and resets button states.
+ * @returns {void}
  */
   stop() { // Renamed from endGame for clarity (can be triggered by user or timer)
       if (!this.gameRunning && !this.gamePaused) return; // Do nothing if already stopped
@@ -790,6 +870,7 @@ class Game {
   /**
  * Reset all game state to initial values, clear timers, and hide game over card.
  * @sideEffect Clears timeouts/intervals, resets flags, removes moles, hides overlay.
+ * @returns {void}
  */
   reset() {
       this.score = 0;
@@ -816,6 +897,11 @@ class Game {
 
 
 
+/**
+ * Toggle the paused state of the game.
+ * @sideEffect Pauses or resumes timers and updates button state.
+ * @returns {void}
+ */
   togglePause() {
       if (!this.gameRunning) return; // Can't pause if not running
 
@@ -884,6 +970,11 @@ class Game {
  
 
   // --- Internal Helper Methods ---
+  /**
+   * Decrement the game timer and update the UI.
+   * @sideEffect Updates the timer display and ends the game if time runs out.
+   * @returns {void}
+   */
   _tick() { // Called by the interval timer
       if (this.gamePaused) return; // Double check just in case
 
@@ -905,6 +996,7 @@ class Game {
  * then remove it. Recursively schedules the next spawn at a random interval.
  * @sideEffect Mutates `activeCharacters`, adds/removes `.mole` classes, and
  *             sets `nextCharacterTimeout`.
+ * @returns {void}
  */
   _spawnMole() {
       // Find available holes (indices not in activeMoles)
@@ -956,6 +1048,11 @@ class Game {
 
 
 
+  /**
+   * Schedule the next mole spawn at a random interval.
+   * @sideEffect Sets a timeout for the next spawn.
+   * @returns {void}
+   */
   _scheduleNextSpawn() {
       if (!this.gameRunning || this.gamePaused) return; // Don't schedule if not running or paused
 
@@ -975,6 +1072,11 @@ class Game {
 
 
 
+  /**
+   * Start the game timer.
+   * @sideEffect Sets an interval for the game timer.
+   * @returns {void}
+   */
   _startTimer() {
       // Prevent multiple timers
       if (this.countdownIntervalId) {
@@ -987,6 +1089,11 @@ class Game {
 
 
 
+  /**
+   * Clear all active timers.
+   * @sideEffect Clears intervals and timeouts.
+   * @returns {void}
+   */
   _clearTimers() {
       clearInterval(this.countdownIntervalId);
       clearTimeout(this.spawnTimeoutId);
@@ -997,6 +1104,10 @@ class Game {
 
 
 
+  /**
+   * Check if the game is currently running.
+   * @returns {boolean} True if the game is running, false otherwise.
+   */
   isRunning() {
        return this.gameRunning;
   }
@@ -1004,6 +1115,10 @@ class Game {
 
 
 
+  /**
+   * Check if the game is currently paused.
+   * @returns {boolean} True if the game is paused, false otherwise.
+   */
   isPaused() {
       return this.gamePaused;
   }
