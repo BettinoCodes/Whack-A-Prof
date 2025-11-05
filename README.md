@@ -12,6 +12,5 @@ Submit suggestions for improvements or corrections as pull requests or issues.
 
 
 <img width="1889" height="916" alt="Screenshot 2025-11-04 175517" src="https://github.com/user-attachments/assets/6a5045fc-5b75-4783-b124-c120687f2d6f" />
-<img width="1893" height="915" alt="Screenshot 2025-11-04 175718" src="https://github.com/user-attachments/assets/2700fc22-5104-4bea-810e-9aee8fb25982" />
 <img width="1882" height="918" alt="Screenshot 2025-11-04 175628" src="https://github.com/user-attachments/assets/611a665d-ece5-4f11-8264-6d7a4d580969" />
 <img width="1901" height="914" alt="Screenshot 2025-11-04 180821" src="https://github.com/user-attachments/assets/f5f93fc0-2a7b-418f-8a5d-6b0cba8806ce" />
