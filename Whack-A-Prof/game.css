@@ -132,7 +132,7 @@ body {
     width :var(--hole);
     height: 50px;
     /* background-color: rgb(117, 12, 12); */
-    background: url('../assets/Animation/Hole.png') no-repeat center center;
+    background: url('/assets/Animation/Hole.png') no-repeat center center;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -359,7 +359,7 @@ body.click
   height: 128px;
   position: absolute;
   pointer-events: none;
-  background: url('../assets/Animation/mallet1cursor3.png') no-repeat center center;
+  background: url('/assets/Animation/mallet1cursor3.png') no-repeat center center;
   background-size: contain;
   transform: translate(-20000px, 200px); /* offset to align the tip */
   transition: transform 0.3s ease;
@@ -368,14 +368,14 @@ body.click
 
 
 .cursor-weapon1 #custom-cursor {
-  background: url('../assets/Animation/mallet1cursor3.png') no-repeat center center;
+  background: url('/assets/Animation/mallet1cursor3.png') no-repeat center center;
   background-size: contain;
   transform: translate(-20000px, 200px); /* offset to align the tip */
 
 }
 
 .cursor-weapon2 #custom-cursor {
-  background: url('../assets/Animation/mallet2cursor3.png') no-repeat center center;
+  background: url('/assets/Animation/mallet2cursor3.png') no-repeat center center;
   background-size: contain;
   transform: translate(-20000px, 200px); /* offset to align the tip */
 }
