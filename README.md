@@ -309,11 +309,16 @@ interface HighScore {
 ### Main Menu
 <img width="1889" height="916" alt="Main Menu" src="https://github.com/user-attachments/assets/6a5045fc-5b75-4783-b124-c120687f2d6f" />
 
+### Gameplay
+<img width="1316" height="881" alt="Screenshot 2026-02-22 161441" src="https://github.com/user-attachments/assets/1e893629-4e2d-401e-afc5-c507f1b3ef0d" />
+
 ### Tutorial
 <img width="1882" height="918" alt="Weapon Selection" src="https://github.com/user-attachments/assets/611a665d-ece5-4f11-8264-6d7a4d580969" />
 
 ### Leaderboard
 <img width="1901" height="914" alt="Gameplay" src="https://github.com/user-attachments/assets/f5f93fc0-2a7b-418f-8a5d-6b0cba8806ce" />
+
+
 
 ## 🤝 Contributing
 
